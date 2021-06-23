@@ -1,24 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import io from 'socket.io-client';
+import { Provider } from 'react-redux';
+import generateStore from './redux/store';
+import { getUsersAction } from './redux/ducks/getUsersDuck';
+// components
+import CreateNewUser from './components/CreateNewUser';
+import UserList from './components/UserList';
+// styled
+import styled from 'styled-components';
+
+export const socket = io('http://127.0.0.1:5000/');
+
+const WrapApp = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: auto;
+`;
 
 function App() {
+  const store = generateStore();
+  store.dispatch(getUsersAction());
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <WrapApp>
+        <h1>All Users</h1>
+        <CreateNewUser />
+        <UserList />
+      </WrapApp>
+    </Provider>
   );
 }
 
